@@ -2,6 +2,8 @@ import { ObjectId } from 'mongodb';
 import { connectDB } from '../../../../util/database';
 import LeftSide from '@/components/client/LeftSide';
 import RightSide from '@/components/server/RightSide';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 const Detail = async (props: any) => {
   const db = (await connectDB).db('forum');
@@ -9,6 +11,16 @@ const Detail = async (props: any) => {
     .collection('post')
     .findOne({ _id: new ObjectId(props.params.id) });
   // console.log(result);
+
+  let session: any = await getServerSession(authOptions);
+
+  if (!session) {
+    return (
+      <div className="mt-20 flex h-[85vh] items-center justify-center">
+        로그인하세요
+      </div>
+    );
+  }
 
   return (
     <main className="mt-20 flex h-[85vh] items-center justify-center">

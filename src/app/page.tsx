@@ -1,5 +1,5 @@
 import { connectDB } from '../../util/database';
-import ListItem from '@/components/client/ListItem';
+import ListItem from '@/components/server/ListItem';
 import LeftSide from '@/components/client/LeftSide';
 import RightSide from '@/components/server/RightSide';
 
@@ -17,6 +17,7 @@ const Home = async () => {
       <div className="flex h-full max-w-[1440px] justify-between">
         <LeftSide />
         <section className="m-2 flex-col items-center justify-center">
+          {/* @ts-expect-error Async Server Component */}
           <ListItem result={result} />
         </section>
         <RightSide />

@@ -1,8 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { connectDB } from '../../../../util/database';
-import Link from 'next/link';
 import Form from '@/components/client/Form';
-import Card from '@/components/UI/Card';
 import LeftSide from '@/components/client/LeftSide';
 import RightSide from '@/components/server/RightSide';
 
