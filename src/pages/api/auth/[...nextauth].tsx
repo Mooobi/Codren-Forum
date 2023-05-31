@@ -10,7 +10,7 @@ export const authOptions: any = {
       clientSecret: process.env.KAKAO_CLIENT_PASSWORD!,
     }),
   ],
-  secret: '1234',
+  secret: process.env.SECRET_KEY,
   adapter: MongoDBAdapter(connectDB),
 };
 

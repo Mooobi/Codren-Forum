@@ -6,6 +6,70 @@
 
 <summary>
 
+## 2023. 5. 31. 프로젝트 7일차
+
+</summary>
+
+### 로그인 상태에 따른 CRUD 조건부 렌더링 구현
+
+- 로그인 시 email 제공 동의를 하지 않은 유저의 경우, mypage에서 email을 입력하면 유저 db에 email을 추가하도록 구현하였습니다.
+
+- 로그인했을 때, db에 email이 있을 경우에만 글 작성이 가능하게끔 구현하였습니다.
+
+- 로그인했을 경우에만 글 내용을 볼 수 있도록 구현했습니다.
+
+- 수정, 삭제 버튼을 db의 email과 현재 로그인한 유저의 email의 일치 여부에 따라 조건부 렌더링하는 로직을 구현하는 도중, 문제가 발생했습니다. ListItem에서 db를 받아오려고 하면 dns 모듈과 fs 모듈이 없다는 에러가 뜹니다. 다른 페이지에서는 잘 받아오는데 왜 여기서만 못받아올까 생각해보니 ListItem은 클라이언트 컴포넌트로 사용하는 게 다른 컴포넌트들과의 차이점이였습니다. 따라서 onClick을 사용하는 Delete 컴포넌트만 빼주어 클라이언트 컴포넌트로 만들고, ListItem 컴포넌트는 서버 컴포넌트로 변경해주니 에러가 사라지고 정상적으로 작동했습니다.
+
+- 메인페이지에서 내가 작성한 글이면 수정, 삭제 버튼이 함께 나타나도록 구현하였습니다.
+
+- 마이페이지에서 내가 작성할 글 목록을 수정, 삭제 버튼과 함께 나타나도록 구현하였습니다.
+
+### 더미데이터 생성 버튼 구현
+
+- 기능 작동 확인을 위해 더미데이터를 생성하여 db에 저장하는 더미데이터 생성 버튼을 만들었습니다.
+
+```TS
+//DummyCreater.tsx
+const DummyCreater = () => {
+  const data = {
+    title: `제주삼다수는 화산암반수입니다. ${Math.floor(Math.random() * 100)}`,
+    email: 'antod2981@nate.com',
+    date: new Date().toLocaleString(),
+    author: '박무생',
+    ...
+  };
+
+  return (
+    <button
+      onClick={() => {
+        axios.post('api/post/dummy', data);
+      }}
+    >
+      버튼
+    </button>
+  );
+};
+```
+
+```TS
+//dummy.tsx
+const handler = async (req: any, res: any) => {
+  try {
+    const db = (await connectDB).db('forum');
+    await db.collection('post').insertOne(req.body);
+    return res.redirect(302, '/');
+  } catch (err) {
+    return res.status(500).json('error');
+  }
+};
+```
+
+</details>
+
+<details>
+
+<summary>
+
 ## 2023. 5. 30. 프로젝트 6일차
 
 </summary>
@@ -79,7 +143,7 @@ const Card = (props: any) => {
 
 - Login, Logout 컴포넌트를 Sign 컴포넌트로 합쳐주었습니다. mypage 만들려고 했는데 갑자기 리팩토링하기 시작했습니다. 이제 어느정도 한 것 같으니 mypage를 만들어 보겠습니다.
 
-- mypage를 만들고 나서 email을 입력하면 제출할 곳이 필요한데 기존의 로그인을 토큰 으로 하기 때문에 DB에 추가 입력된 유저 정보를 저장할 수 없습니다. 따라서 로그인 방식을 세션으로 변경하여 유저가 로그인하면 서버에 유저 정보가 저장되게 변경하였습니다.
+- mypage를 만들고 나서 email을 입력하면 제출할 곳이 필요한데 기존의 로그인을 토큰으로 하기 때문에 DB에 추가 입력된 유저 정보를 저장할 수 없습니다. 따라서 로그인 방식을 세션으로 변경하여 유저가 로그인하면 서버에 유저 정보가 저장되게 변경하였습니다.
 
 ```TS
 export const authOptions: any = {
@@ -89,12 +153,12 @@ export const authOptions: any = {
       clientSecret: process.env.KAKAO_CLIENT_PASSWORD!,
     }),
   ],
-  secret: '1234',
+  secret: process.env.SECRET_KEY,
   adapter: MongoDBAdapter(connectDB), // 추가된 부분
 };
 ```
 
-- 이제 몽고DB에 유저 정보가 저장되었고, 유저가 email을 입력하면 DB에서 현재 로그인한 유저 정보를 찾아 입력한 email을 추가해주도록 하겠습니다. 잠이 오니까 내일 하겠습니다.
+- 이제 몽고DB에 유저 정보가 저장되었고, mypage에서 유저가 email을 입력하면 DB에서 현재 로그인한 유저 정보를 찾아 입력한 email을 추가해주도록 하겠습니다. 잠이 오니까 내일 하겠습니다.
 
 </details>
 
